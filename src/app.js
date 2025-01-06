@@ -75,10 +75,23 @@ try {
 });
 //update data of user
 
-app.patch("/user",async(req,res)=>{
+app.patch("/user/:userId",async(req,res)=>{
     const data = req.body;
-    const userid = req.body.userId;
+    const userid = req.params?.userId;
+    
+  
     try{
+
+        const ALLOWED_UPDATES =[
+            "photoUrl"," about","gender","age","skills"
+        ]
+        const isUpdateAllowed = Object.keys(data).every((k)=>ALLOWED_UPDATES.includes(k));
+        if(!isUpdateAllowed){
+            throw new Error("Updates  not allowed");
+        }
+        if(data?.skills.length>10){
+            throw new Error("Skills cannot be more than 10");
+        }
         await User.findByIdAndUpdate({_id:userid},data,{runValidators:true,returnDocument:"after"});
         res.send("Data updates successfully");
 
