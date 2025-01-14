@@ -10,7 +10,6 @@ const { userAuth } = require("../middlewares/auth");
 
 requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res) => {
 
-  console.log("Success test");
 
   try {
     const fromUserId = req.user._id;
@@ -34,8 +33,8 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
     //check if the request is already been sent 
     const existingConnectionRequests = await ConnectionRequest.findOne({
       $or: [
-        { toUserId: toUserId, fromUserId: fromUserId }, // Condition 1: Match email
-        { toUserId: fromUserId, fromUserId: toUserId } // Condition 2: Match username
+        { toUserId: toUserId, fromUserId: fromUserId },
+        { toUserId: fromUserId, fromUserId: toUserId }
       ]
 
     });
@@ -51,11 +50,11 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
     });
     const data = await connectionRequest.save();
     res.json({
-      message: "Connection sent successfull",
-      data
+      message: req.user.firstName + " is " + status + " in " + toUser.firstName,
+      data: data
     });
   } catch (error) {
-    res.status(400).send("Something went wrong" + error);
+    res.status(400).send("Something went wrong!!! " + error.message);
 
   }
 });

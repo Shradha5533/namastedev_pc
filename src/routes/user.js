@@ -36,8 +36,15 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
           toUserId: loggedInUser._id,
         }
       ]
-    }).populate("fromUserId", "firstName lastName about skills gender photoUrl");
-    const data = connectionRequests.map((row) => row.fromUserId);
+    }).populate("fromUserId", "firstName lastName about skills gender photoUrl").populate("toUserId", "firstName lastName about skills gender photoUrl");
+    const data = connectionRequests.map((row) => {
+      if (row.fromUserId._id.toString() === loggedInUser._id.toString()) {
+        return row.toUserId;
+
+      } else {
+        return row.fromUserId;
+      }
+    });
     res.send({
       message: "Data sent successfully",
       data: data

@@ -23,7 +23,7 @@ const connectionRequestSchema = new mongoose.Schema({
   }
 
 }, { timestamps: true });
-connectionRequestSchema.indexes({ fromUserId: 1, toUserId: 1 });
+connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 });
 
 // Compound index for efficient querying of pending requests for a specific user
 
